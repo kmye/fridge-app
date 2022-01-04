@@ -10,8 +10,12 @@ class Item {
   @HiveField(1)
   final DateTime expiryDate;
 
+  @HiveField(2)
+  final String quantity;
+
   Item({
     required this.name,
     required this.expiryDate,
+    required this.quantity,
   });
 }

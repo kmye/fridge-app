@@ -1,4 +1,3 @@
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_test/hive_test.dart';
@@ -16,16 +15,25 @@ void main() {
 
   group('fridge repository', () {
     test('should add a fridge with items correctly', () async {
-      var box = await Hive.openBox('fridges');
+      var box = await Hive.openLazyBox('fridges');
       FridgeRepository fridgeRepository = FridgeRepository(box);
 
-      Fridge fridge = withClock(Clock.fixed(DateTime(2020, 09, 01)), () => Fridge(name: 'random fridge', items: [Item(name: 'milk', expiryDate: clock.now())]));
-      await fridgeRepository.add(fridge);
+      Fridge fridge = withClock(
+          Clock.fixed(DateTime(2020, 09, 01)),
+          () => Fridge(name: 'random fridge', items: [
+                Item(
+                    name: 'milk',
+                    expiryDate: clock.now(),
+                    quantity: '2 bottles')
+              ]));
+      await fridgeRepository.save(fridge);
 
-      expect(box.getAt(0).name, 'random fridge');
-      expect(box.getAt(0).items.length, 1);
-      expect(box.getAt(0).items[0].name, 'milk');
-      expect(box.getAt(0).items[0].expiryDate.toString(), '2020-09-01 00:00:00.000');
+      Fridge savedFridge = await box.get('random fridge');
+      expect(savedFridge.name, 'random fridge');
+      expect(savedFridge.items[0].name, 'milk');
+      expect(savedFridge.items[0].expiryDate.toString(),
+          '2020-09-01 00:00:00.000');
+      expect(savedFridge.items[0].quantity, '2 bottles');
     });
   });
 

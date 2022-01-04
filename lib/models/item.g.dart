@@ -19,17 +19,20 @@ class ItemAdapter extends TypeAdapter<Item> {
     return Item(
       name: fields[0] as String,
       expiryDate: fields[1] as DateTime,
+      quantity: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Item obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.expiryDate);
+      ..write(obj.expiryDate)
+      ..writeByte(2)
+      ..write(obj.quantity);
   }
 
   @override
